@@ -1,0 +1,20 @@
+{
+  "G": {
+    "smoke": [
+      "smoke",
+      "login"
+    ],
+    "login": [
+      "login"
+    ]
+  },
+  "C": {
+    "smoke": [
+      "smoke",
+      "login"
+    ],
+    "login": [
+      "login"
+    ]
+  }
+}

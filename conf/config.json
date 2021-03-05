@@ -1,0 +1,104 @@
+{
+  "产品线1简称": {
+    "product": "产品线全称",
+    "file": "cases1.xlsx",
+    "utils": "产品线1Utils",
+    "env": {
+      "dev": {
+        "service": {
+          "app": "http://192.16.16.55:4444",
+          "web": "http://192.16.16.55:5555"
+        },
+        "log": {
+          "logger_level": "DEBUG",
+          "stream_level": "DEBUG",
+          "file_level": "INFO",
+          "file_level_rf": "INFO"
+        },
+        "mysql": {
+          "host": "192.16.16.55",
+          "port": "3306",
+          "user": "admin",
+          "password": "admin"
+        },
+        "data": {
+          "web_user": "asdsa@asdd.ccc",
+          "web_pwd": "584ac7e1e756e261b"
+        }
+      },
+      "test": {
+        "service": {
+          "app": "http://192.16.16.40:4444",
+          "web": "http://192.16.16.40:5555"
+        },
+        "log": {
+          "logger_level": "DEBUG",
+          "stream_level": "DEBUG",
+          "file_level": "INFO",
+          "file_level_rf": "INFO"
+        },
+        "mysql": {
+          "host": "192.16.16.99",
+          "port": "3306",
+          "user": "admin",
+          "password": "admin"
+        },
+        "data": {
+          "web_user": "api@dsglj.ccc",
+          "web_pwd": "584ac7e1e7f61b"
+        }
+      }
+    }
+  },
+  "产品线2简称": {
+    "product": "产品线2",
+    "file": "cases2.xlsx",
+    "utils": "产品线2Utils",
+    "env": {
+      "dev": {
+        "service": {
+          "app": "http://192.16.16.22:4444",
+          "web": "http://192.16.16.22:5555"
+        },
+        "log": {
+          "logger_level": "DEBUG",
+          "stream_level": "DEBUG",
+          "file_level": "INFO",
+          "file_level_rf": "INFO"
+        },
+        "mysql": {
+          "host": "192.16.16.22",
+          "port": "3306",
+          "user": "admin",
+          "password": "admin"
+        },
+        "data": {
+          "web_user": "asdsa@asddas.ccc",
+          "web_pwd": "584ac7e1e89f52061b"
+        }
+      },
+      "test": {
+        "service": {
+          "app": "http://192.16.16.22:4444",
+          "web": "http://192.16.16.22:5555"
+        },
+        "log": {
+          "logger_level": "DEBUG",
+          "stream_level": "DEBUG",
+          "file_level": "INFO",
+          "file_level_rf": "INFO"
+        },
+        "mysql": {
+          "host": "192.16.16.22",
+          "port": "3306",
+          "user": "admin",
+          "password": "admin"
+        },
+        "data": {
+          "web_user": "api@dsgklj.ccc",
+          "web_pwd": "584ac7e1e89f52061b"
+        }
+      }
+    }
+  }
+}

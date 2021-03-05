@@ -1,0 +1,12 @@
+pytest>=5.3.2
+exrex>=0.10.5
+openpyxl>=2.6.2
+PyMySQL>=0.9.3
+requests>=2.22.0
+allure-pytest>=2.8.6
+requests_toolbelt>=0.9.1
+jsonpath>=0.82
+filetype>=1.0.7
+pytest-custom-nodeid>=0.2
+allure-python-commons>=2.8.34
+pytest-xdist>=2.2.1
