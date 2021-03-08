@@ -53,7 +53,7 @@ class MySqlData:
             logger.info("Model: fetchone, SQL: 【{}】".format(sql))
             for i in range(times):
                 row = self.cur.execute(sql)
-                logger.info("row: {}".format(row))
+                logger.debug("row: {}".format(row))
                 if not row:
                     time.sleep(6)
                     self.con.commit()
@@ -67,6 +67,7 @@ class MySqlData:
             return res
         except pymysql.err.InterfaceError as e:
             self.con.ping(reconnect=True)
+            logger.warning(f"Database connection failed: {e}")
             return self.find_one(sql, expected, times)
         except (pymysql.err.Error, TypeError) as e:
             logger.error("Database error rolling back: {}".format(e))
@@ -84,7 +85,7 @@ class MySqlData:
             self.con.ping(reconnect=True)
             for i in range(10):
                 row = self.cur.execute(sql)
-                logger.info("row: {}".format(row))
+                logger.debug("row: {}".format(row))
                 if row:
                     break
                 # self.con.commit()

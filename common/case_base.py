@@ -38,6 +38,7 @@ class ActionBase:
 class CaseBase(ActionBase):
 
     def case(self, data):
+        response = ""
         status = "error"
         try:
             self.wait_sleep(data.sleep)
@@ -60,7 +61,7 @@ class CaseBase(ActionBase):
 
     def initial_data(self, data, replace_field):
         with allure.step("数据准备"):
-            self.logger.info(f"数据准备字段: {replace_field}")
+            self.logger.debug(f"数据准备字段: {replace_field}")
             for i in replace_field:
                 value = getattr(data, i, None)
                 if value:
@@ -71,17 +72,17 @@ class CaseBase(ActionBase):
     def pre_execute_sql(self, data, exe_field):  # TODO: 暂不支持从预处理中提起参数
         with allure.step("前置sql执行"):
             self.initial_data(data, exe_field)
-            self.logger.info(f"前置执行字段:{exe_field}")
+            self.logger.debug(f"前置执行字段:{exe_field}")
             result = self.execute_sql(data, exe_field)
-            self.logger.info(f"前置执行结果:{result}")
+            self.logger.debug(f"前置执行结果:{result}")
             return result
 
     def teardown_execute_sql(self, data, exe_field):  # TODO: 暂不支持从后处理中提起参数
         with allure.step("后置sql执行"):
             self.initial_data(data, exe_field)
-            self.logger.info(f"后置执行字段:[{exe_field}]")
+            self.logger.debug(f"后置执行字段:{exe_field}")
             result = self.execute_sql(data, exe_field)
-            self.logger.info(f"后置执行结果:{result}")
+            self.logger.debug(f"后置执行结果:{result}")
             return result
 
     def request_data(self, data):

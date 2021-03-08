@@ -1,6 +1,7 @@
 import os
 import json
 import openpyxl
+from filelock import FileLock
 from common.constant import Constant
 from common.logger import logger
 
@@ -38,42 +39,45 @@ class CasesData:
 
 class ReadExcel:
 
-    def __init__(self, file_name, *sheet_name):
+    def __init__(self, file_path, *sheet_name):
         """
 
-        :param file_name: 文件地址 -> str
+        :param file_path: 文件地址 -> str
         :param sheet_name: 工作表名字 -> str
         """
-        self.file_name = file_name
+        self.file_path = file_path
         self.sheet_name = sheet_name
         self.wb = None
         self.sheet = dict()
         self.data = dict()
 
-    def __del__(self):
-        self.wb.close()
-
-    def open(self, model="read"):
+    def __open(self):
         # 创建操纵excel的实例
-        self.wb = openpyxl.load_workbook(self.file_name)
-        for sheet in self.sheet_name:
-            self.sheet.setdefault(sheet, self.wb[sheet])
-        if model == "read":
+        with FileLock(self.file_path + ".lock", timeout=30):
+            self.wb = openpyxl.load_workbook(self.file_path)
+            for sheet in self.sheet_name:
+                try:
+                    self.sheet.setdefault(sheet, self.wb[sheet])
+                except KeyError as e:
+                    logger.error(f"The sheet: [{sheet}] does not exist. Track:{e}")
+                    raise e
             self.wb.close()
-        logger.info("Workbook: {}, Sheet: {}, Model: {}".format(self.file_name, self.sheet_name, model))
+        logger.info("Workbook: {}, Sheet: {}".format(self.file_path, self.sheet_name))
 
     def read_obj(self):
-        self.open()
+        self.__open()
         for k, y in self.sheet.items():
             data = self._read_excel_obj(y)
             self.data.setdefault(k, data)
         return self.data
 
     def read_dict(self):
-        self.open()
+        self.__open()
+        data = dict()
         for k, y in self.sheet.items():
-            self._read_excel_dict(y)
-        return self.data
+            dic = self._read_excel_dict(y)
+            data.setdefault(k, dic)
+        return data
 
     @staticmethod
     def _read_excel_dict(sheet) -> list:
@@ -84,16 +88,19 @@ class ReadExcel:
         """
         # 获取首行数据，得到title并存于list
         title = []
-        data = list(sheet.rows)
-        for i in data[0]:
+        for i in sheet[1]:
             title.append(i.value)
         # 获取每一行的数据并与title组成dict
         case_data = []
-        for r in data[1:]:
-            case_list = []
-            for va in r:
-                case_list.append(va.value)
-            case_data.append(zip(title, case_list))
+        if sheet.max_row >= 3:
+            for r in sheet[2:sheet.max_row]:
+                case_list = []
+                for va in r:
+                    case_list.append(va.value)
+                case_data.append(zip(title, case_list))
+        else:
+            data = [i.value for i in sheet[2:sheet.max_row]]
+            case_data.append(zip(title, data))
         return case_data
 
     @staticmethod
@@ -106,15 +113,19 @@ class ReadExcel:
         """
         title = []
         if not list_column:  # 未传参时默认为获取全部
-            data = list(sheet_obj.rows)
-            for i in data[0]:
+            for i in sheet_obj[1]:
                 title.append(i.value)
             obj_data = []
-            for r in data[1:]:
-                case_list = []
-                for va in r:
-                    case_list.append(va.value)
-                attr = CasesData(zip(title, case_list))
+            if sheet_obj.max_row >= 3:
+                for r in sheet_obj[2:sheet_obj.max_row]:
+                    case_list = []
+                    for va in r:
+                        case_list.append(va.value)
+                    attr = CasesData(zip(title, case_list))
+                    obj_data.append(attr)
+            else:
+                data = [i.value for i in sheet_obj[2:sheet_obj.max_row]]
+                attr = CasesData(zip(title, data))
                 obj_data.append(attr)
 
         else:  # 指定column
@@ -141,23 +152,30 @@ class ReadExcel:
         :return:
         """
 
-        def write(**kwargs):
+        def write(sheet, **kwargs):
             row = kwargs['row']
             column = kwargs['column']
             msg = kwargs['msg']
             try:
                 logger.info("Excel write to data! row: {}, column: {}, value: {}".format(row, column, msg))
-                self.sheet.get(sheet).cell(row=row, column=column, value=msg)
+                sheet.cell(row=row, column=column, value=msg)
             except Exception as e:
                 logger.error("Excel Write data function is error: {}".format(e))
 
-        self.open("write")
+        wb = openpyxl.load_workbook(self.file_path)
+        sheet = wb[sheet]
         for i in args:
-            write(**i)
-        self.wb.save(self.file_name)
-        self.wb.close()
+            write(sheet, **i)
+        wb.save(self.file_path)
+        wb.close()
 
 
 if __name__ == '__main__':
-    obj = ReadExcel(Constant.EXCEL_DIR + "/cases.xlsx", "login").read_obj()
-    print(obj[0].__dict__)
+    # obj = ReadExcel(Constant.EXCEL_DIR + "/cases.xlsx", "smoke2", "smoke3", "smoke4", "smoke5", "smoke6", "smoke7",
+    #                 "smoke8", "smoke9", "smoke10", "smoke11", "smoke12", "smoke13", "smoke14", "smoke15",
+    #                 "smoke16", "smoke17")
+    excel = ReadExcel(Constant.EXCEL_DIR + "/cases.xlsx", "init1")
+    obj = excel.read_obj()
+    dic = excel.read_dict()
+    print(obj)
+    print(list(dic))

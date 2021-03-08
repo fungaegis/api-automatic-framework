@@ -44,7 +44,7 @@ class HTTPRequest:
             except requests.exceptions.ConnectionError as e:
                 logger.error("正在请求:URL: {} failed! {}".format(url, e))
                 continue
-            logger.info(response.json())
+            logger.info(response.text[:100])
             if keyword:
                 r = response.json()
                 e = expected
@@ -75,7 +75,7 @@ class HTTPRequest:
             except requests.exceptions.ConnectionError as e:
                 logger.error("正在请求:URL: {} failed! {}".format(url, e))
                 continue
-            logger.info("Response:" + response.text)
+            logger.info("Response:" + response.text[:100])
             if wait_path:
                 e = expected
                 r = jsonpath.jsonpath(response.json(), wait_path)
@@ -83,7 +83,7 @@ class HTTPRequest:
                 if not r and not e:
                     raise ValueError("jsonpath assert error!")
                 if r == e:
-                    logger.info(f"waiting actual:{r} --- expected:{e}")
+                    logger.debug(f"waiting actual:{r} --- expected:{e}")
                     break
                 logger.debug(f"restart waiting actual:{r} --- expected:{e}")
                 time.sleep(6)

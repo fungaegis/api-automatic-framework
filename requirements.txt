@@ -10,3 +10,4 @@ filetype>=1.0.7
 pytest-custom-nodeid>=0.2
 allure-python-commons>=2.8.34
 pytest-xdist>=2.2.1
+filelock>=3.0.12

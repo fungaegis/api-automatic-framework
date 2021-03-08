@@ -70,9 +70,9 @@ class Logger:
 
     def __file_rotating_output(self):
         # 设置日志格式
-        log_fmt = logging.Formatter(fmt='%(asctime)s - 【%(levelname)s】: \n%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        log_fmt = logging.Formatter(fmt='%(asctime)s - [%(levelname)s]: \n%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
         # 日志文件过大处理, 当单个日志文件大于10M时, 重新开新的文件, 最多4个
-        log_rotating = RotatingFileHandler(self.file, maxBytes=2684354, backupCount=3, encoding="utf8")
+        log_rotating = RotatingFileHandler(self.file, maxBytes=2560000, backupCount=3, encoding="utf8")
         log_rotating.setFormatter(log_fmt)
         log_rotating.setLevel(self.file_level_rf)
         return log_rotating

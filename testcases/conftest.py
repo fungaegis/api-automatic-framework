@@ -16,8 +16,16 @@ def setup_init():
 
 
 @pytest.fixture(scope="class")
-def case_template_object(setup_init):
+def case_template_object(setup_init, worker_id, tmp_path_factory):
     db = setup_init[0]
     request = setup_init[1]
-    case = CaseBase(db=db, request=request, context=Context(), utils=get_utils())
+    context = Context()
+    get_token(worker_id, tmp_path_factory, db, request, context)
+    case = CaseBase(db=db, request=request, context=context, utils=get_utils())
     yield case
+
+
+if __name__ == '__main__':
+    pytest.main(["-v", "-E=test", "-P=G", "-n=auto", "--dist=loadscope",
+                 "--rename=on", r"--skip-json=../skip.json", "--mark=test",
+                 "--alluredir=../reports/allure-result"])

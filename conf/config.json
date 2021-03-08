@@ -3,6 +3,7 @@
     "product": "产品线全称",
     "file": "cases1.xlsx",
     "utils": "产品线1Utils",
+    "init": "前置用例sheet,用于分发提取参数",
     "env": {
       "dev": {
         "service": {
@@ -54,6 +55,7 @@
     "product": "产品线2",
     "file": "cases2.xlsx",
     "utils": "产品线2Utils",
+    "init": "前置用例sheet,用于分发提取参数",
     "env": {
       "dev": {
         "service": {
