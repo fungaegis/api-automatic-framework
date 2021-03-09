@@ -105,14 +105,17 @@ def login(db, request, context):
 
 def get_token(worker_id, tmp_path_factory, db, request, context):
     if getattr(context, "CONF").get("init"):
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "data.json"
-        with FileLock(str(fn) + ".lock", timeout=60):
-            if fn.is_file():
-                token = json.loads(fn.read_text())
-                for k, y in token.items():
-                    setattr(context, k, y)
-            else:
-                log.info(f"The data is initialized by worker_id {worker_id}")
-                login(db, request, context)
-                fn.write_text(json.dumps(context.__dict__))
+        log.info(f"The data is initialized by worker_id {worker_id}")
+        if worker_id == "master":
+            login(db, request, context)
+        else:
+            root_tmp_dir = tmp_path_factory.getbasetemp().parent
+            fn = root_tmp_dir / "data.json"
+            with FileLock(str(fn) + ".lock", timeout=60):
+                if fn.is_file():
+                    token = json.loads(fn.read_text())
+                    for k, y in token.items():
+                        setattr(context, k, y)
+                else:
+                    login(db, request, context)
+                    fn.write_text(json.dumps(context.__dict__))

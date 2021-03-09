@@ -122,11 +122,16 @@ class ReadExcel:
                     for va in r:
                         case_list.append(va.value)
                     attr = CasesData(zip(title, case_list))
-                    obj_data.append(attr)
+                    if getattr(attr, "id", None):
+                        obj_data.append(attr)
+                    else:
+                        logger.warning(f"Invalid data exists in sheet:[{sheet_obj.title}],"
+                                       f"The value of coordinate:[{r[0].coordinate}] is value:[{r[0].value}] ")
             else:
                 data = [i.value for i in sheet_obj[2:sheet_obj.max_row]]
                 attr = CasesData(zip(title, data))
-                obj_data.append(attr)
+                if getattr(attr, "id", None):
+                    obj_data.append(attr)
 
         else:  # 指定column
             if sheet_obj.max_column < max(list_column):

@@ -117,5 +117,5 @@ class HTTPRequest:
                 logger.error("正在请求上传文件 URL: {} failed! {}".format(url, e))
                 response = self.upload_stream(url, file_param, file_path, headers, **kwargs)
             else:
-                logger.info("正在请求上传文件 URL:{}, file_name:{}".format(url, file_path))
+                logger.info(f"正在请求上传文件 URL:{url}, file_name:{file_path}, Response:{response}")
         return response
