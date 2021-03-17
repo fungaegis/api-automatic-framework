@@ -98,9 +98,10 @@ def login(db, request, context):
     file = conf.get("file")
     file_path = os.path.join(Constant.EXCEL_DIR, file)
     sheet = conf.get("init")
-    obj = ReadExcel(file_path, sheet).read_obj()
+    obj = ReadExcel(file_path, *sheet).read_obj()
     for i in obj.values():
-        CaseBase(db=db, request=request, context=context, utils=get_utils()).case(*i)
+        for c in i:
+            CaseBase(db=db, request=request, context=context, utils=get_utils()).case(c)
 
 
 def get_token(worker_id, tmp_path_factory, db, request, context):
